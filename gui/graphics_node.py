@@ -22,3 +22,6 @@ class GraphicsNode(QGraphicsRectItem):
 
     def y(self):
         return self.__y
+
+    def getNumber(self):
+        return self.number.toPlainText()
