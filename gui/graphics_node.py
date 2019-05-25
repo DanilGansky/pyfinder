@@ -11,6 +11,7 @@ class GraphicsNode(QGraphicsRectItem):
         self.setPen(QPen(QColor("black")))
         self.__x = x
         self.__y = y
+        self.setZValue(3)
         
         self.number = QGraphicsTextItem(str(number))
         self.number.setPos(x, y)

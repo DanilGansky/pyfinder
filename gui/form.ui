@@ -23,7 +23,21 @@
    <item row="1" column="1">
     <widget class="QGraphicsView" name="graphicsView"/>
    </item>
-   <item row="0" column="0" rowspan="2">
+   <item row="0" column="1">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Graph:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QLabel" name="state">
+     <property name="text">
+      <string>State: Ready</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" rowspan="3">
     <widget class="QGroupBox" name="groupBox">
      <property name="minimumSize">
       <size>
@@ -170,13 +184,6 @@
        </widget>
       </item>
      </layout>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Graph:</string>
-     </property>
     </widget>
    </item>
   </layout>

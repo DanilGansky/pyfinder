@@ -21,6 +21,12 @@ class Ui_Form(object):
         self.graphicsView = QtWidgets.QGraphicsView(Form)
         self.graphicsView.setObjectName("graphicsView")
         self.gridLayout.addWidget(self.graphicsView, 1, 1, 1, 1)
+        self.label_3 = QtWidgets.QLabel(Form)
+        self.label_3.setObjectName("label_3")
+        self.gridLayout.addWidget(self.label_3, 0, 1, 1, 1)
+        self.state = QtWidgets.QLabel(Form)
+        self.state.setObjectName("state")
+        self.gridLayout.addWidget(self.state, 2, 1, 1, 1)
         self.groupBox = QtWidgets.QGroupBox(Form)
         self.groupBox.setMinimumSize(QtCore.QSize(250, 0))
         self.groupBox.setMaximumSize(QtCore.QSize(300, 16777215))
@@ -94,10 +100,7 @@ class Ui_Form(object):
         self.label = QtWidgets.QLabel(self.groupBox)
         self.label.setObjectName("label")
         self.gridLayout_2.addWidget(self.label, 1, 0, 1, 1)
-        self.gridLayout.addWidget(self.groupBox, 0, 0, 2, 1)
-        self.label_3 = QtWidgets.QLabel(Form)
-        self.label_3.setObjectName("label_3")
-        self.gridLayout.addWidget(self.label_3, 0, 1, 1, 1)
+        self.gridLayout.addWidget(self.groupBox, 0, 0, 3, 1)
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -105,6 +108,8 @@ class Ui_Form(object):
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "PyFinder"))
+        self.label_3.setText(_translate("Form", "Graph:"))
+        self.state.setText(_translate("Form", "State: Ready"))
         self.groupBox.setTitle(_translate("Form", "Graph properties:"))
         self.label_2.setText(_translate("Form", "Weight:"))
         self.pushButton_2.setText(_translate("Form", "Remove"))
@@ -120,6 +125,5 @@ class Ui_Form(object):
         self.pushButton_4.setText(_translate("Form", "Find"))
         self.pushButton.setText(_translate("Form", "Add"))
         self.label.setText(_translate("Form", "Nodes:"))
-        self.label_3.setText(_translate("Form", "Graph:"))
 
 
