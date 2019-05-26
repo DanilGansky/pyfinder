@@ -11,6 +11,7 @@ class GraphicsScene(QGraphicsScene):
         self.window = window
         self.setSceneRect(0, 0, 100, 100)
         self.nodes = []
+        self.arcs = []
         self.counter = 0
         self.buffer = []
 
@@ -55,6 +56,29 @@ class GraphicsScene(QGraphicsScene):
         if len(self.nodes) > index_node and index_node >= 0:
             self.removeItem(self.nodes[index_node])
             self.removeItem(self.nodes[index_node].number)
+
+            arcs_to_remove = self.getArcs(self.nodes[index_node])
+
+            if len(arcs_to_remove) > 0:
+                for arc in arcs_to_remove:
+                    self.removeItem(arc)
+                    self.removeItem(arc.number)
+                    self.arcs.remove(arc)
+
+                    index_of_arc = 0
+
+                    for i in range(self.window.listWidget_2.count()):
+                        listItem = self.window.listWidget_2.item(i)
+
+                        if listItem.text() == "Arc: first node #" + str(arc.first_node.getNumber()) + ", second node #" + str(arc.second_node.getNumber()):
+                            index_of_arc = i
+
+
+                    arc_to_remove = self.window.listWidget_2.takeItem(index_of_arc)
+                    self.window.listWidget_2.removeItemWidget(arc_to_remove)
+
+                    self.window.textEdit.append("Deleted arc: first node #" + str(arc.first_node.getNumber()) + ", second node #" + str(arc.second_node.getNumber()))
+
             del self.nodes[index_node]
 
             node_to_remove = self.window.listWidget.takeItem(index_node)
@@ -88,5 +112,18 @@ class GraphicsScene(QGraphicsScene):
 
     def connectNodes(self):
        arc = Arc(self.buffer[0], self.buffer[1], self.window.spinBox.value(), self)
+       self.arcs.append(arc)
+       self.window.listWidget_2.addItem("Arc: first node #" + str(self.buffer[0].getNumber()) + ", second node #" + str(self.buffer[1].getNumber()))
+
        self.window.state.setText("Node #" + self.buffer[0].getNumber() + " and node #" + self.buffer[1].getNumber() + " - connected!")
+       self.window.textEdit.append("Node #" + self.buffer[0].getNumber() + " and node #" + self.buffer[1].getNumber() + " - connected!")
        self.buffer.clear()
+
+    def getArcs(self, node):
+        arcs_to_remove = []
+
+        for arc in self.arcs:
+            if arc.first_node == node or arc.second_node == node:
+                arcs_to_remove.append(arc)
+
+        return arcs_to_remove
