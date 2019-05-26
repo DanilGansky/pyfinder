@@ -4,10 +4,18 @@ from PyQt5.QtWidgets import QGraphicsScene
 from PyQt5.QtGui import *
 from graphics_node import *
 from graphics_arc import *
+import sys
+
+sys.path.append("../core/")
+
+from bfs import *
+from dijkstra import *
+from utils import *
 
 class GraphicsScene(QGraphicsScene):
     def __init__(self, window):
         QGraphicsScene.__init__(self)
+
         self.window = window
         self.setSceneRect(0, 0, 100, 100)
         self.nodes = []
@@ -18,6 +26,7 @@ class GraphicsScene(QGraphicsScene):
         self.window.pushButton_2.clicked.connect(lambda: self.deleteNode(self.window.listWidget.currentRow()))
         self.window.pushButton_3.clicked.connect(lambda: self.deleteArc(self.window.listWidget_2.currentRow()))
         self.window.pushButton.clicked.connect(self.connectNodes)
+        self.window.pushButton_4.clicked.connect(self.find)
 
     def mouseReleaseEvent(self, event):
         x = event.scenePos().x() - 25
@@ -52,6 +61,8 @@ class GraphicsScene(QGraphicsScene):
             self.nodes.append(node)
             self.addItem(node)
             self.counter += 1
+
+            self.updateListNodes()
 
     def deleteNode(self, index_node):
         if len(self.nodes) > index_node and index_node >= 0:
@@ -89,6 +100,8 @@ class GraphicsScene(QGraphicsScene):
             self.window.state.setText("Clear buffer")
 
             self.window.textEdit.append("Deleted node #" + str(index_node))
+
+            self.updateListNodes()
 
     def deleteArc(self, index_arc):
         if len(self.arcs) > index_arc and index_arc >= 0:
@@ -136,10 +149,73 @@ class GraphicsScene(QGraphicsScene):
             self.buffer.clear()
 
     def getArcs(self, node):
-        arcs_to_remove = []
+        arcs = []
 
         for arc in self.arcs:
             if arc.first_node == node or arc.second_node == node:
-                arcs_to_remove.append(arc)
+                arcs.append(arc)
 
-        return arcs_to_remove
+        return arcs
+
+    def updateListNodes(self):
+        self.window.comboBox.clear()
+        self.window.comboBox_2.clear()
+
+        for node in self.nodes:
+            self.window.comboBox.addItem("Node #" + str(node.getNumber()))
+            self.window.comboBox_2.addItem("Node #" + str(node.getNumber()))
+
+    def generateMatrix(self):
+        matrix = []
+        matrix_row = []
+
+        for i in range(len(self.nodes)):
+            tempArcs = self.getArcs(self.nodes[i])
+            arcs = [] 
+            matrix_row.clear()
+
+            for arc in tempArcs:
+                if int(arc.first_node.getNumber()) != i:
+                    arc.reverse()
+                    arcs.append(arc)
+                else:
+                    arcs.append(arc)
+
+            for j in range(len(self.nodes)):
+                for arc in arcs:
+                    if j == int(arc.second_node.getNumber()):
+                        matrix_row.append(arc.weight)
+
+                if len(matrix_row) <= j:
+                    matrix_row.append(0)
+
+            matrix.append(list(matrix_row))
+
+        return matrix
+
+    def find(self):
+        map = self.generateMatrix()
+
+        node_start = int(self.window.comboBox.currentText().split("#")[1])
+        node_goal = int(self.window.comboBox_2.currentText().split("#")[1])
+        nodes = getWeightedNodes(map)
+
+        option = "debug"
+        visited = []
+        neighborhoods = []
+
+        algorithm = self.window.comboBox_3.currentText()
+
+        if algorithm == "BFS":
+            way = getShortWay(bfs(node_start, node_goal, nodes, neighborhoods, visited, 0, option))
+
+        print("Way: ")
+
+        print(node_start, end = " ")
+
+        for node in reversed(way):
+            print(node.position, end = " ")
+
+        print()
+
+

@@ -25,3 +25,11 @@ class Arc(QGraphicsLineItem):
 
         scene.addItem(self)
         scene.addItem(self.number)
+
+    def __str__(self):
+        return "{" + str(self.first_node.getNumber()) + ", " + str(self.second_node.getNumber()) + ", " + str(self.weight) + "}"
+
+    def reverse(self):
+        temp = self.first_node
+        self.first_node = self.second_node
+        self.second_node = temp
