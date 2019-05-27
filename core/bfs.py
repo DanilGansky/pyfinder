@@ -3,7 +3,7 @@
 from utils import *
 from node import *
 
-def bfs(node_position, node_goal, nodes, neighborhoods, visited, node_parrent, option):
+def bfs(node_position, node_goal, nodes, neighborhoods, visited, node_parrent):
     previous_node = Node(node_position, node_parrent)
 
     if not isVisited(previous_node, visited):
@@ -16,26 +16,11 @@ def bfs(node_position, node_goal, nodes, neighborhoods, visited, node_parrent, o
                     if node_position == node.parrent:
                         neighborhoods.append(node)
 
-        if option == "debug":
-            print("Nodes: ")
+        if len(neighborhoods) > 0:
+            node_next = neighborhoods[0]
+            del neighborhoods[0]
 
-            for node in neighborhoods:
-                node.show()
-
-            print('Visited: ')
-
-            for node in neighborhoods:
-                node.show()
-
-            print()
-
-        node_next = neighborhoods[0]
-
-        del neighborhoods[0]
-
-        # print(neighborhoods[0].position)
-    
-        return bfs(node_next.position, node_goal, nodes, neighborhoods, visited, node_next.parrent, option)
+            return bfs(node_next.position, node_goal, nodes, neighborhoods, visited, node_next.parrent)
 
     return visited
 

@@ -2,28 +2,24 @@
 
 from node import *
 
-def getNodes(map):
+def getNodes(map, nodes_index):
     nodes = []
 
-    rows = len(map)
-
-    for i in range(rows):
-        for j in range(rows):
-            if map[i][j] > 0:
+    for index1, i in enumerate(nodes_index):
+        for index2, j in enumerate(nodes_index):
+            if map[index1][index2] > 0:
                 node = Node(j, i)
                 nodes.append(node)
 
     return nodes
 
-def getWeightedNodes(map):
+def getWeightedNodes(map, nodes_index):
     nodes = []
 
-    rows = len(map)
-
-    for i in range(rows):
-        for j in range(rows):
-            if map[i][j] > 0:
-                weight = map[i][j]
+    for index1, i in enumerate(nodes_index):
+        for index2, j in enumerate(nodes_index):
+            if map[index1][index2] > 0:
+                weight = map[index1][index2]
                 node = WeightedNode(j, i, weight)
                 nodes.append(node)
 
@@ -43,7 +39,7 @@ def inNeighborhoods(node, neighborhoods):
 
     return False
 
-def getShortWay(visited):
+def getShortWay(visited, goal):
     node_next = visited[-1]
     way = []
 
@@ -52,7 +48,10 @@ def getShortWay(visited):
             way.append(node_next)
             node_next = node
 
-    return way
+    if way and goal == way[-1]:
+        return way, True
+    else:
+        return way, False
 
 def inputDataFromFile(file_name):
     matrix_data = open(file_name, 'r')

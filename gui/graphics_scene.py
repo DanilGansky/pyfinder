@@ -168,9 +168,11 @@ class GraphicsScene(QGraphicsScene):
     def generateMatrix(self):
         matrix = []
         matrix_row = []
+        status = False
 
-        for i in range(len(self.nodes)):
-            tempArcs = self.getArcs(self.nodes[i])
+        for node in self.nodes:
+            i = int(node.getNumber())
+            tempArcs = self.getArcs(node)
             arcs = [] 
             matrix_row.clear()
 
@@ -181,12 +183,16 @@ class GraphicsScene(QGraphicsScene):
                 else:
                     arcs.append(arc)
 
-            for j in range(len(self.nodes)):
+            for nodeColumn in self.nodes:
+                j = int(nodeColumn.getNumber())
+                status = False
+
                 for arc in arcs:
                     if j == int(arc.second_node.getNumber()):
                         matrix_row.append(arc.weight)
+                        status = True
 
-                if len(matrix_row) <= j:
+                if status == False:
                     matrix_row.append(0)
 
             matrix.append(list(matrix_row))
@@ -194,28 +200,33 @@ class GraphicsScene(QGraphicsScene):
         return matrix
 
     def find(self):
-        map = self.generateMatrix()
+        if len(self.nodes) > 0:
+            map = self.generateMatrix()
 
-        node_start = int(self.window.comboBox.currentText().split("#")[1])
-        node_goal = int(self.window.comboBox_2.currentText().split("#")[1])
-        nodes = getWeightedNodes(map)
+            node_start = int(self.window.comboBox.currentText().split("#")[1])
+            node_goal = int(self.window.comboBox_2.currentText().split("#")[1])
+            nodes_index = []
 
-        option = "debug"
-        visited = []
-        neighborhoods = []
+            for node in self.nodes:
+                nodes_index.append(int(node.getNumber()))
 
-        algorithm = self.window.comboBox_3.currentText()
+            nodes = getWeightedNodes(map, nodes_index)
 
-        if algorithm == "BFS":
-            way = getShortWay(bfs(node_start, node_goal, nodes, neighborhoods, visited, 0, option))
+            visited = []
+            neighborhoods = []
+            algorithm = self.window.comboBox_3.currentText()
+            way = []
+            result = False
 
-        print("Way: ")
+            if algorithm == "BFS":
+                way_and_result = getShortWay(bfs(node_start, node_goal, nodes, neighborhoods, visited, 0), node_goal)
+                way = way_and_result[0]
+                result = way_and_result[1]
 
-        print(node_start, end = " ")
+            self.window.textEdit.append("Way: ")
 
-        for node in reversed(way):
-            print(node.position, end = " ")
-
-        print()
-
-
+            self.window.textEdit.append(str(node_start))
+            
+            if not result:
+                for node in reversed(way):
+                    self.window.textEdit.append(str(node.position))
