@@ -222,6 +222,14 @@ class GraphicsScene(QGraphicsScene):
                 way_and_result = getWay(bfs(node_start, node_goal, nodes, neighborhoods, visited, 0), node_goal)
                 way = way_and_result[0]
                 result = way_and_result[1]
+            elif algorithm == "Dijkstra":
+                way_data = dijkstra(node_start, node_goal, nodes, neighborhoods, visited, 0, 0)
+                way_and_result = getWay(way_data[0], node_goal)
+                way = way_and_result[0]
+                result = way_and_result[1]
+                weight = way_data[1]
+
+                self.window.textEdit.append("Weight: " + str(weight))
 
             self.window.textEdit.append("Way: ")
 
