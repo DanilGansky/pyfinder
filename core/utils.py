@@ -8,17 +8,6 @@ def getNodes(map, nodes_index):
     for index1, i in enumerate(nodes_index):
         for index2, j in enumerate(nodes_index):
             if map[index1][index2] > 0:
-                node = Node(j, i)
-                nodes.append(node)
-
-    return nodes
-
-def getWeightedNodes(map, nodes_index):
-    nodes = []
-
-    for index1, i in enumerate(nodes_index):
-        for index2, j in enumerate(nodes_index):
-            if map[index1][index2] > 0:
                 weight = map[index1][index2]
                 node = WeightedNode(j, i, weight)
                 nodes.append(node)
@@ -27,19 +16,19 @@ def getWeightedNodes(map, nodes_index):
 
 def isVisited(node, visited):
     for node_in_visited in visited:
-        if node.position == node_in_visited.position: # and node.parrent == node_in_visited.parrent:
+        if node.position == node_in_visited.position:
           return True
 
     return False
 
 def inNeighborhoods(node, neighborhoods):
     for node_in_neighborhoods in neighborhoods:
-        if node.position == node_in_neighborhoods.position:#  and node.parrent == node_in_neighborhoods.parrent:
+        if node.position == node_in_neighborhoods.position:
             return True
 
     return False
 
-def getShortWay(visited, goal):
+def getWay(visited, goal):
     node_next = visited[-1]
     way = []
 
@@ -48,7 +37,7 @@ def getShortWay(visited, goal):
             way.append(node_next)
             node_next = node
 
-    if way and goal == way[-1]:
+    if way and goal == way[0].position:
         return way, True
     else:
         return way, False

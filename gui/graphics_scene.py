@@ -210,7 +210,7 @@ class GraphicsScene(QGraphicsScene):
             for node in self.nodes:
                 nodes_index.append(int(node.getNumber()))
 
-            nodes = getWeightedNodes(map, nodes_index)
+            nodes = getNodes(map, nodes_index)
 
             visited = []
             neighborhoods = []
@@ -219,7 +219,7 @@ class GraphicsScene(QGraphicsScene):
             result = False
 
             if algorithm == "BFS":
-                way_and_result = getShortWay(bfs(node_start, node_goal, nodes, neighborhoods, visited, 0), node_goal)
+                way_and_result = getWay(bfs(node_start, node_goal, nodes, neighborhoods, visited, 0), node_goal)
                 way = way_and_result[0]
                 result = way_and_result[1]
 
@@ -227,6 +227,6 @@ class GraphicsScene(QGraphicsScene):
 
             self.window.textEdit.append(str(node_start))
             
-            if not result:
+            if result:
                 for node in reversed(way):
                     self.window.textEdit.append(str(node.position))
