@@ -1,6 +1,7 @@
 # Graphics Scene
 
-from PyQt5.QtWidgets import QGraphicsScene
+from PyQt5.QtWidgets import QGraphicsScene, QFileDialog
+from PyQt5.QtCore import QDir
 from PyQt5.QtGui import *
 from graphics_node import *
 from graphics_arc import *
@@ -22,11 +23,13 @@ class GraphicsScene(QGraphicsScene):
         self.arcs = []
         self.counter = 0
         self.buffer = []
+        self.matrix = []
 
         self.window.pushButton_2.clicked.connect(lambda: self.deleteNode(self.window.listWidget.currentRow()))
         self.window.pushButton_3.clicked.connect(lambda: self.deleteArc(self.window.listWidget_2.currentRow()))
         self.window.pushButton.clicked.connect(self.connectNodes)
         self.window.pushButton_4.clicked.connect(self.find)
+        self.window.pushButton_5.clicked.connect(self.openFromFile)
 
     def mouseReleaseEvent(self, event):
         x = event.scenePos().x() - 25
@@ -50,7 +53,11 @@ class GraphicsScene(QGraphicsScene):
             self.buffer.clear()
             self.window.state.setText("Clear buffer. Nodes disconnected")
 
-       
+    def openFromFile(self):
+        self.matrix.clear()
+        open_file = QFileDialog.getOpenFileName(self.window, "Open matrix data", QDir.currentPath(), "All files (*.*) ;; Text files (.txt)")[0]
+        self.matrix = inputDataFromFile(open_file)
+
     def addNode(self, x, y):
         if not self.isLocated(x, y):
             # self.__log_file.write("Created node #" + str(self.counter) + "\n")
@@ -166,7 +173,7 @@ class GraphicsScene(QGraphicsScene):
             self.window.comboBox_2.addItem("Node #" + str(node.getNumber()))
 
     def generateMatrix(self):
-        matrix = []
+        self.matrix.clear()
         matrix_row = []
         status = False
 
@@ -195,13 +202,12 @@ class GraphicsScene(QGraphicsScene):
                 if status == False:
                     matrix_row.append(0)
 
-            matrix.append(list(matrix_row))
-
-        return matrix
+            self.matrix.append(list(matrix_row))
 
     def find(self):
         if len(self.nodes) > 0:
-            map = self.generateMatrix()
+            self.generateMatrix()
+            map = list(self.matrix)
 
             node_start = int(self.window.comboBox.currentText().split("#")[1])
             node_goal = int(self.window.comboBox_2.currentText().split("#")[1])

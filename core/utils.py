@@ -23,7 +23,7 @@ def isVisited(node, visited):
 
 def inNeighborhoods(node, neighborhoods):
     for node_in_neighborhoods in neighborhoods:
-        if node.position == node_in_neighborhoods.position:
+        if node.position == node_in_neighborhoods.position and node.parrent == node_in_neighborhoods.parrent:
             return True
 
     return False
