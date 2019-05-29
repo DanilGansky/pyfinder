@@ -29,7 +29,6 @@ class GraphicsScene(QGraphicsScene):
         self.window.pushButton_3.clicked.connect(lambda: self.deleteArc(self.window.listWidget_2.currentRow()))
         self.window.pushButton.clicked.connect(self.connectNodes)
         self.window.pushButton_4.clicked.connect(self.find)
-        self.window.pushButton_5.clicked.connect(self.openFromFile)
 
     def mouseReleaseEvent(self, event):
         x = event.scenePos().x() - 25
@@ -53,14 +52,8 @@ class GraphicsScene(QGraphicsScene):
             self.buffer.clear()
             self.window.state.setText("Clear buffer. Nodes disconnected")
 
-    def openFromFile(self):
-        self.matrix.clear()
-        open_file = QFileDialog.getOpenFileName(self.window, "Open matrix data", QDir.currentPath(), "All files (*.*) ;; Text files (.txt)")[0]
-        self.matrix = inputDataFromFile(open_file)
-
     def addNode(self, x, y):
         if not self.isLocated(x, y):
-            # self.__log_file.write("Created node #" + str(self.counter) + "\n")
             self.window.textEdit.append("Created node #" + str(self.counter))
 
             node = GraphicsNode(x, y, self.counter, self)
