@@ -140,20 +140,19 @@ class GraphicsScene(QGraphicsScene):
         return data_to_return
 
     def connectNodes(self):
-        # tempArc = Arc(self.buffer[0], self.buffer[1], self.window.spinBox.value(), self)
-        # if not self.isArc(tempArc):
         if len(self.buffer) == 2:
-            if self.buffer[0] == self.buffer[1]:
-                arc = Ellipse(self.buffer[0], self.window.spinBox.value(), self)
-            else:
-                arc = Arc(self.buffer[0], self.buffer[1], self.window.spinBox.value(), self)
+            if not self.isArc():
+                if self.buffer[0] == self.buffer[1]:
+                    arc = Ellipse(self.buffer[0], self.window.spinBox.value(), self)
+                else:
+                    arc = Arc(self.buffer[0], self.buffer[1], self.window.spinBox.value(), self)
 
-            self.arcs.append(arc)
-            self.window.listWidget_2.addItem("Arc: first node #" + str(self.buffer[0].getNumber()) + ", second node #" + str(self.buffer[1].getNumber()))
+                self.arcs.append(arc)
+                self.window.listWidget_2.addItem("Arc: first node #" + str(self.buffer[0].getNumber()) + ", second node #" + str(self.buffer[1].getNumber()))
 
-            self.window.state.setText("Node #" + self.buffer[0].getNumber() + " and node #" + self.buffer[1].getNumber() + " - connected!")
-            self.window.textEdit.append("Node #" + self.buffer[0].getNumber() + " and node #" + self.buffer[1].getNumber() + " - connected!")
-            self.buffer.clear()
+                self.window.state.setText("Node #" + self.buffer[0].getNumber() + " and node #" + self.buffer[1].getNumber() + " - connected!")
+                self.window.textEdit.append("Node #" + self.buffer[0].getNumber() + " and node #" + self.buffer[1].getNumber() + " - connected!")
+                self.buffer.clear()
 
     def getArcs(self, node):
         arcs = []
@@ -164,10 +163,10 @@ class GraphicsScene(QGraphicsScene):
 
         return arcs
 
-    def isArc(self, arc):
+    def isArc(self):
         for arc_in_arcs in self.arcs:
-            if (arc.first_node == arc_in_arcs.first_node and arc.second_node == arc_in_arcs.second_node)\
-                or (arc.second_node == arc_in_arcs.first_node and arc.first_node == arc_in_arcs.second_node):
+            if (self.buffer[0] == arc_in_arcs.first_node and self.buffer[1] == arc_in_arcs.second_node)\
+                or (self.buffer[1] == arc_in_arcs.first_node and self.buffer[0] == arc_in_arcs.second_node):
                     return True
 
         return False
