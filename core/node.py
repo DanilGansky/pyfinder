@@ -8,6 +8,9 @@ class Node:
     def show(self):
         print(self.position)
         print(self.parrent)
+    
+    def __str__(self):
+        return '{' + str(self.position) + ', ' + str(self.parrent) + '}'
 
 
 class WeightedNode(Node):
@@ -15,5 +18,5 @@ class WeightedNode(Node):
         super().__init__(position, parrent)
         self.weight = weight
 
-    def show(self):
-        print('{' + str(self.position) + ', ' + str(self.parrent) + ', ' + str(self.weight) + '}')
+    def __str__(self):
+        return '{' + str(self.position) + ', ' + str(self.parrent) + ', ' + str(self.weight) + '}'

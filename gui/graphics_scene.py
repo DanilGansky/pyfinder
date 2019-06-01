@@ -1,7 +1,6 @@
 # Graphics Scene
 
 from PyQt5.QtWidgets import QGraphicsScene, QFileDialog
-from PyQt5.QtCore import QDir
 from PyQt5.QtGui import *
 from graphics_node import *
 from graphics_arc import *
@@ -47,15 +46,15 @@ class GraphicsScene(QGraphicsScene):
             self.window.state.setText("Buffer contain node #" + data[1].getNumber())
         elif data[0] and len(self.buffer) == 1:
             self.buffer.append(data[1])
-            self.window.state.setText("Ready to connect node #" + str(self.buffer[0].getNumber() + " and node #" + str(self.buffer[1].getNumber())))
+            self.window.state.setText(\
+                "Ready to connect node #" + str(self.buffer[0].getNumber()\
+                + " and node #" + str(self.buffer[1].getNumber())))
         elif data[0] and len(self.buffer) == 2:
             self.buffer.clear()
             self.window.state.setText("Clear buffer. Nodes disconnected")
 
     def addNode(self, x, y):
         if not self.isLocated(x, y):
-            self.window.textEdit.append("Created node #" + str(self.counter))
-
             node = GraphicsNode(x, y, self.counter, self)
             self.window.listWidget.addItem("Node #" + str(node.getNumber()))
             self.nodes.append(node)
@@ -82,14 +81,14 @@ class GraphicsScene(QGraphicsScene):
                     for i in range(self.window.listWidget_2.count()):
                         listItem = self.window.listWidget_2.item(i)
 
-                        if listItem.text() == "Arc: first node #" + str(arc.first_node.getNumber()) + ", second node #" + str(arc.second_node.getNumber()):
+                        if listItem.text() == "Arc: {" + str(arc.first_node.getNumber())\
+                            + ", " + str(arc.second_node.getNumber())\
+                            + ", " + str(arc.weight) + "}":
                             index_of_arc = i
 
 
                     arc_to_remove = self.window.listWidget_2.takeItem(index_of_arc)
                     self.window.listWidget_2.removeItemWidget(arc_to_remove)
-
-                    self.window.textEdit.append("Deleted arc: first node #" + str(arc.first_node.getNumber()) + ", second node #" + str(arc.second_node.getNumber()))
 
             del self.nodes[index_node]
 
@@ -98,8 +97,6 @@ class GraphicsScene(QGraphicsScene):
 
             self.buffer.clear()
             self.window.state.setText("Clear buffer")
-
-            self.window.textEdit.append("Deleted node #" + str(index_node))
 
             self.updateListNodes()
 
@@ -114,12 +111,12 @@ class GraphicsScene(QGraphicsScene):
             self.buffer.clear()
             self.window.state.setText("Clear buffer")
 
-            self.window.textEdit.append("Deleted arc: first node #" + str(self.arcs[index_arc].first_node.getNumber()) + ", second node #" + str(self.arcs[index_arc].second_node.getNumber()))
             del self.arcs[index_arc]
 
     def isLocated(self, x, y):
         for node_in_nodes in self.nodes:
-            if (x >= node_in_nodes.x() - 125 and x <= node_in_nodes.x() + 125) and (y >= node_in_nodes.y() - 125 and y <= node_in_nodes.y() + 125):
+            if (x >= node_in_nodes.x() - 125 and x <= node_in_nodes.x() + 125)\
+                and (y >= node_in_nodes.y() - 125 and y <= node_in_nodes.y() + 125):
                 return True
 
         return False
@@ -140,13 +137,22 @@ class GraphicsScene(QGraphicsScene):
 
     def connectNodes(self):
         if len(self.buffer) == 2:
-            arc = Arc(self.buffer[0], self.buffer[1], self.window.spinBox.value(), self)
-            self.arcs.append(arc)
-            self.window.listWidget_2.addItem("Arc: first node #" + str(self.buffer[0].getNumber()) + ", second node #" + str(self.buffer[1].getNumber()))
+            if not self.isArc():
+                if self.buffer[0] != self.buffer[1]:
+                    arc = Arc(self.buffer[0], self.buffer[1], self.window.spinBox.value(), self)
 
-            self.window.state.setText("Node #" + self.buffer[0].getNumber() + " and node #" + self.buffer[1].getNumber() + " - connected!")
-            self.window.textEdit.append("Node #" + self.buffer[0].getNumber() + " and node #" + self.buffer[1].getNumber() + " - connected!")
-            self.buffer.clear()
+                    self.arcs.append(arc)
+                    self.window.listWidget_2.addItem(\
+                        "Arc: {" + str(self.buffer[0].getNumber())\
+                        + ", " + str(self.buffer[1].getNumber())\
+                        + ", " + str(self.window.spinBox.value()) + "}"\
+                    )
+
+                    self.window.state.setText(\
+                        "Node #" + self.buffer[0].getNumber()\
+                        + " and node #" + self.buffer[1].getNumber()\
+                        + " - connected!")
+                    self.buffer.clear()
 
     def getArcs(self, node):
         arcs = []
@@ -156,6 +162,20 @@ class GraphicsScene(QGraphicsScene):
                 arcs.append(arc)
 
         return arcs
+
+    def isArc(self):
+        for arc_in_arcs in self.arcs:
+            if (self.buffer[0] == arc_in_arcs.first_node and self.buffer[1] == arc_in_arcs.second_node)\
+                or (self.buffer[1] == arc_in_arcs.first_node and self.buffer[0] == arc_in_arcs.second_node):
+                    return True
+
+        return False
+
+    def getArc(self, first_node, second_node):
+        for arc in self.arcs:
+            if (first_node == int(arc.first_node.getNumber()) and second_node == int(arc.second_node.getNumber())) \
+                or (second_node == int(arc.first_node.getNumber()) and first_node == int(arc.second_node.getNumber())):
+                    return arc
 
     def updateListNodes(self):
         self.window.comboBox.clear()
@@ -215,6 +235,7 @@ class GraphicsScene(QGraphicsScene):
             neighborhoods = []
             algorithm = self.window.comboBox_3.currentText()
             way = []
+            weight = 0
             result = False
 
             if algorithm == "BFS":
@@ -228,12 +249,15 @@ class GraphicsScene(QGraphicsScene):
                 result = way_and_result[1]
                 weight = way_data[1]
 
-                self.window.textEdit.append("Weight: " + str(weight))
-
-            self.window.textEdit.append("Way: ")
-
-            self.window.textEdit.append(str(node_start))
-            
             if result:
-                for node in reversed(way):
-                    self.window.textEdit.append(str(node.position))
+                self.showWay(way, weight)
+
+    def showWay(self, way, weight):
+        for arc in self.arcs:
+            arc.setPen(QPen(QColor("green"), 5))
+
+        for i in range(len(way)):
+            arc = self.getArc(way[i].position, way[i].parrent)
+
+            if arc:
+                arc.setPen(QPen(QColor("pink"), 5))
