@@ -1,6 +1,6 @@
 # PyFinder
 
-# Table of Contents
+## Table of Contents
 
 - [Description](#description)
 - [Screenshot](#screenshot)
@@ -11,8 +11,8 @@
 This program allows you to find the shortest path or just the path of the algorithms of BFS (breadth-first search), Dijkstra and A * (A star).
 The project is written in Python.
 
-## Screenshoot
-![image](screenshoot.png)
+## Screenshot
+![image](screenshot.png)
 
 ## Run
 > $ cd gui && python3 form.py
