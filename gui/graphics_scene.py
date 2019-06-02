@@ -1,12 +1,12 @@
 # Graphics Scene
 
 from PyQt5.QtWidgets import QGraphicsScene, QFileDialog
-from PyQt5.QtGui import *
+from PyQt5.QtGui import QPen, QColor, QBrush
 from graphics_node import *
 from graphics_arc import *
 import sys
 
-sys.path.append("../core/")
+sys.path.append("../core")
 
 from bfs import *
 from dijkstra import *
