@@ -2,14 +2,14 @@
 
 from node import *
 
-def getNodes(map, nodes_index):
+def getNodes(map, nodes_index, mapXY):
     nodes = []
 
     for index1, i in enumerate(nodes_index):
         for index2, j in enumerate(nodes_index):
             if map[index1][index2] > 0:
                 weight = map[index1][index2]
-                node = WeightedNode(j, i, weight)
+                node = ANode(j, i, weight, mapXY[index1][index2][1], mapXY[index1][index2][0])
                 nodes.append(node)
 
     return nodes

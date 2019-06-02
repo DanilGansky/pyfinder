@@ -10,6 +10,7 @@ sys.path.append("../core/")
 
 from bfs import *
 from dijkstra import *
+from astar import *
 from utils import *
 
 class GraphicsScene(QGraphicsScene):
@@ -23,6 +24,7 @@ class GraphicsScene(QGraphicsScene):
         self.counter = 0
         self.buffer = []
         self.matrix = []
+        self.matrixXY = []
 
         self.window.pushButton_2.clicked.connect(lambda: self.deleteNode(self.window.listWidget.currentRow()))
         self.window.pushButton_3.clicked.connect(lambda: self.deleteArc(self.window.listWidget_2.currentRow()))
@@ -54,6 +56,8 @@ class GraphicsScene(QGraphicsScene):
             self.window.state.setText("Clear buffer. Nodes disconnected")
 
     def addNode(self, x, y):
+        self.cleanArcs()
+
         if not self.isLocated(x, y):
             node = GraphicsNode(x, y, self.counter, self)
             self.window.listWidget.addItem("Node #" + str(node.getNumber()))
@@ -64,6 +68,8 @@ class GraphicsScene(QGraphicsScene):
             self.updateListNodes()
 
     def deleteNode(self, index_node):
+        self.cleanArcs()
+
         if len(self.nodes) > index_node and index_node >= 0:
             self.removeItem(self.nodes[index_node])
             self.removeItem(self.nodes[index_node].number)
@@ -101,6 +107,8 @@ class GraphicsScene(QGraphicsScene):
             self.updateListNodes()
 
     def deleteArc(self, index_arc):
+        self.cleanArcs()
+
         if len(self.arcs) > index_arc and index_arc >= 0:
             self.removeItem(self.arcs[index_arc])
             self.removeItem(self.arcs[index_arc].number)
@@ -136,6 +144,8 @@ class GraphicsScene(QGraphicsScene):
         return data_to_return
 
     def connectNodes(self):
+        self.cleanArcs()
+
         if len(self.buffer) == 2:
             if not self.isArc():
                 if self.buffer[0] != self.buffer[1]:
@@ -177,6 +187,18 @@ class GraphicsScene(QGraphicsScene):
                 or (second_node == int(arc.first_node.getNumber()) and first_node == int(arc.second_node.getNumber())):
                     return arc
 
+    def getNodeById(self, node_index):
+        for node in self.nodes:
+            if int(node.getNumber()) == node_index:
+                return node
+
+    def getANodeById(self, node_goal, nodes):
+        for node in nodes:
+            if node.position == node_goal:
+                return node
+
+        return ANode(node_goal, node_goal, 0, 0, 0)
+
     def updateListNodes(self):
         self.window.comboBox.clear()
         self.window.comboBox_2.clear()
@@ -187,14 +209,18 @@ class GraphicsScene(QGraphicsScene):
 
     def generateMatrix(self):
         self.matrix.clear()
+        self.matrixXY.clear()
         matrix_row = []
+        matrix_row_XY = []
+        xy = []
         status = False
 
         for node in self.nodes:
             i = int(node.getNumber())
             tempArcs = self.getArcs(node)
-            arcs = [] 
+            arcs = []
             matrix_row.clear()
+            matrix_row_XY.clear()
 
             for arc in tempArcs:
                 if int(arc.first_node.getNumber()) != i:
@@ -205,22 +231,41 @@ class GraphicsScene(QGraphicsScene):
 
             for nodeColumn in self.nodes:
                 j = int(nodeColumn.getNumber())
+                xy.clear()
                 status = False
 
                 for arc in arcs:
                     if j == int(arc.second_node.getNumber()):
                         matrix_row.append(arc.weight)
+
+                        xy.append(arc.second_node.x())
+                        xy.append(arc.second_node.y())
+                        matrix_row_XY.append(xy)
+
                         status = True
 
                 if status == False:
                     matrix_row.append(0)
 
+                    xy.append(0)
+                    xy.append(0)
+                    matrix_row_XY.append(xy)
+
             self.matrix.append(list(matrix_row))
+            self.matrixXY.append(list(matrix_row_XY))
 
     def find(self):
         if len(self.nodes) > 0:
             self.generateMatrix()
             map = list(self.matrix)
+            mapXY = list(self.matrixXY)
+
+            """
+            for row in mapXY:
+                for column in row:
+                    print(column, end = "\t")
+                print()
+            """
 
             node_start = int(self.window.comboBox.currentText().split("#")[1])
             node_goal = int(self.window.comboBox_2.currentText().split("#")[1])
@@ -229,7 +274,7 @@ class GraphicsScene(QGraphicsScene):
             for node in self.nodes:
                 nodes_index.append(int(node.getNumber()))
 
-            nodes = getNodes(map, nodes_index)
+            nodes = getNodes(map, nodes_index, mapXY)
 
             visited = []
             neighborhoods = []
@@ -237,6 +282,13 @@ class GraphicsScene(QGraphicsScene):
             way = []
             weight = 0
             result = False
+
+            node_xy = self.getNodeById(node_start)
+            anode_goal = self.getANodeById(node_goal, nodes)
+            x = node_xy.x()
+            y = node_xy.y()
+
+            # anode_goal.xy()
 
             if algorithm == "BFS":
                 way_and_result = getWay(bfs(node_start, node_goal, nodes, neighborhoods, visited, 0), node_goal)
@@ -248,16 +300,28 @@ class GraphicsScene(QGraphicsScene):
                 way = way_and_result[0]
                 result = way_and_result[1]
                 weight = way_data[1]
+            elif algorithm == "A*":
+                way_data = astar(node_start, anode_goal, nodes, neighborhoods, visited, 0, 0, x, y)
+                way_and_result = getWay(way_data[0], node_goal)
+                way = way_and_result[0]
+                result = way_and_result[1]
+                weight = way_data[1]
 
             if result:
                 self.showWay(way, weight)
 
-    def showWay(self, way, weight):
+    def cleanArcs(self):
         for arc in self.arcs:
             arc.setPen(QPen(QColor("green"), 5))
+
+    def showWay(self, way, weight):
+        self.cleanArcs()
 
         for i in range(len(way)):
             arc = self.getArc(way[i].position, way[i].parrent)
 
             if arc:
                 arc.setPen(QPen(QColor("pink"), 5))
+
+        if weight > 0:
+            self.window.state.setText("Weight: " + str(weight))
