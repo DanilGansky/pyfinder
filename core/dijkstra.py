@@ -1,7 +1,8 @@
 # Algorithm: Dijkstra
 
-from utils import *
-from node import *
+from core.utils import *
+from core.node import WeightedNode
+
 
 def dijkstra(node_position, node_goal, nodes, neighborhoods, visited, node_parrent, weight):
     previous_node = WeightedNode(node_position, node_parrent, weight)

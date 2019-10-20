@@ -1,11 +1,11 @@
 # Main window
 
-from window import *
-from PyQt5 import *
-from graphics_scene import *
-import sys
+from gui.window import Ui_Form
+from PyQt5.QtWidgets import QWidget
+from gui.graphics_scene import GraphicsScene
 
-class PyFinderWindow(QtWidgets.QWidget, Ui_Form):
+
+class PyFinderWindow(QWidget, Ui_Form):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
@@ -14,10 +14,3 @@ class PyFinderWindow(QtWidgets.QWidget, Ui_Form):
 
         self.scene = GraphicsScene(window)
         self.graphicsView.setScene(self.scene)
-
-
-app = QtWidgets.QApplication(sys.argv)
-w = PyFinderWindow()
-w.show()
-app.exec_()
-

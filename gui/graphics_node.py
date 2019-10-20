@@ -3,6 +3,7 @@
 from PyQt5.QtWidgets import QGraphicsScene, QGraphicsTextItem, QGraphicsRectItem
 from PyQt5.QtGui import QFont, QBrush, QPen, QColor
 
+
 class GraphicsNode(QGraphicsRectItem):
     def __init__(self, x, y, number, scene):
         QGraphicsRectItem.__init__(self)

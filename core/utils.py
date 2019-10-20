@@ -1,6 +1,7 @@
 # Functions for finding shortest path
 
-from node import *
+from core.node import *
+
 
 def getNodes(map, nodes_index, mapXY):
     nodes = []

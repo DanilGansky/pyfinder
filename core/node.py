@@ -1,5 +1,6 @@
 # Class Node
 
+
 class Node:
     def __init__(self, position, parrent):
         self.position = position
