@@ -1,7 +1,8 @@
 # Algorithm: BFS
 
-from utils import *
-from node import *
+from core.utils import *
+from core.node import Node
+
 
 def bfs(node_position, node_goal, nodes, neighborhoods, visited, node_parrent):
     previous_node = Node(node_position, node_parrent)

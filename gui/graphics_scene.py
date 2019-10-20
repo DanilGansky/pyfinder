@@ -2,16 +2,14 @@
 
 from PyQt5.QtWidgets import QGraphicsScene, QFileDialog
 from PyQt5.QtGui import QPen, QColor, QBrush
-from graphics_node import *
-from graphics_arc import *
+from gui.graphics_node import GraphicsNode
+from gui.graphics_arc import Arc
 import sys
+from core.bfs import bfs
+from core.dijkstra import dijkstra
+from core.astar import astar
+from core.utils import *
 
-sys.path.append("../core")
-
-from bfs import *
-from dijkstra import *
-from astar import *
-from utils import *
 
 class GraphicsScene(QGraphicsScene):
     def __init__(self, window):

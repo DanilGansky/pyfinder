@@ -15,7 +15,7 @@ The project is written in Python.
 ![image](screenshot.png)
 
 ## Run
-> $ cd gui && python3 form.py
+> $ pip3 install -r requirements.txt && python3 main.py
 
 ## F.A.Q.
 

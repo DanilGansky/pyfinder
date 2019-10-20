@@ -1,11 +1,13 @@
 # Algorithm: A*
 
-from utils import *
-from node import *
-from math import *
+from core.utils import *
+from core.node import ANode
+from math import sqrt, pow
+
 
 def getLengthToGoal(node_goal, node_current):
     return (sqrt(pow((node_goal.x - node_current.x), 2) + pow((node_goal.y - node_current.y), 2))) / 100
+
 
 def astar(node_position, node_goal, nodes, neighborhoods, visited, node_parrent, weight, x, y):
     previous_node = ANode(node_position, node_parrent, weight, x, y)
