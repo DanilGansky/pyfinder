@@ -8,7 +8,7 @@
 - [F.A.Q.](#faq)
 
 ## Description
-This program allows you to find the shortest path or just the path of the algorithms of BFS (breadth-first search), Dijkstra and A * (A star).
+The program allows you to find the shortest path on a graph using the algorithms BFS (breadth-first search), Dijkstra and A * (A star).
 The project is written in Python.
 
 ## Screenshot
